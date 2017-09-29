@@ -1,0 +1,21 @@
+{
+    "dbLocation": "./state/tsbt.db",
+    "nmapParseFile": "output_nmap.xml",
+    "domainFile": "./state/domains",
+    "subdomainTodoDirectory": "./state/subdomains/todo/",
+    "subdomainDoneDirectory": "./state/subdomains/done/",
+    "subdomainLastCompleted": "./state/subdomains/lastCompleted",
+    "subdomainTodoResolveDirectory": "./state/subdomains-resolve/todo/",
+    "subdomainDoneResolveDirectory": "./state/subdomains-resolve/done/",
+    "subdomainArchiveResolvedDirectory": "./state/subdomains-resolve/archive/",
+    "emailHost": "smtp.gmail.com",
+    "emailPort": "587",
+    "fromEmail": "",
+    "emailPassword": "",
+    "recipients": [
+        ""
+    ],
+    "errorRecipients": [
+        ""
+    ]
+}
