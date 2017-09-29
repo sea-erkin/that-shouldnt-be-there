@@ -1,0 +1,4 @@
+state/tsbt.db
+state/domains
+deploy.sh
+state/config.dev.json
