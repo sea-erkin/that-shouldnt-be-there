@@ -5,10 +5,6 @@ START_DIR=$(pwd)
 TARGET_GO_DIR=$HOME/go/src/github.com/sea-erkin/
 TARGET_PROJECT_DIR=$TARGET_GO_DIR/that-shouldnt-be-there/
 
-export GOROOT=$HOME/go
-export GOPATH=$HOME/go  
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-
 mkdir -p $TARGET_PROJECT_DIR
 
 if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
@@ -17,7 +13,11 @@ if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
 
   cd .. && mv that-shouldnt-be-there/* $TARGET_PROJECT_DIR
 
-  cd $TARGET_GO_DIR/that-shouldnt-be-there && go get && go build
+  export GOROOT=$HOME/go
+  export GOPATH=$HOME/go  
+  export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+  cd $TARGET_PROJECT_DIR && go get && go build
 
  # rm -rf $START_DIR
 
