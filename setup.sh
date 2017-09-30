@@ -34,9 +34,13 @@ fi
 
 if [[ $CONFIG_SUBDOMAIN_SUBLISTER = true ]]; then
 
+  apt install python-pip
+
   mkdir $TARGET_PROJECT_DIR/other-tools
   cd $TARGET_PROJECT_DIR/other-tools
  
   git clone https://github.com/aboul3la/Sublist3r.git
+  
+  cd Sublist3r && pip install -r requirements.txt
 
 fi
