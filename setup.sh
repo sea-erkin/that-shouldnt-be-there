@@ -15,7 +15,7 @@ if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
 
   apt install golang-go	
 
-  cd .. && mv that-shouldnt-be-there/* $TARGET_GO_DIR
+  cd .. && mv that-shouldnt-be-there/* $TARGET_PROJECT_DIR
 
   cd $TARGET_GO_DIR/that-shouldnt-be-there && go get && go build
 
