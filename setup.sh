@@ -23,7 +23,6 @@ fi
 if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
 
   apt install golang-go	
-  apt install sqlite3
 
   git clone https://github.com/sea-erkin/that-shouldnt-be-there.git
   
@@ -32,5 +31,12 @@ if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
   cd $TARGET_GO_DIR/that-shouldnt-be-there && go get && go build
 
   rm -rf $START_DIR
+
+fi
+
+if [[ $CONFIG_STORE_RESULTS = true ]]; then
+
+  apt install sqlite3
+  cd $TARGET_PROJECT_DIR && sqlite3 ./state/tsbt.db -init ./state/initDb.sql
 
 fi
