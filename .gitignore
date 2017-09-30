@@ -1,6 +1,6 @@
 state/tsbt.db
-state/domains
+state/subdomains/todo/*
+state/subdomains/done/*
 deploy.sh
 state/config.dev.json
 other-tools/
-domains.txt
