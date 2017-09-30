@@ -29,7 +29,7 @@ if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
   
   mv that-shouldnt-be-there/ $TARGET_GO_DIR
 
-  cd $TARGET_GO_DIR && go get && go build
+  cd $TARGET_GO_DIR/that-shouldnt-be-there && go get && go build
 
   rm -rf $START_DIR
 
