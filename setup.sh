@@ -1,5 +1,3 @@
-mkdir other-tools
-
 . ./config.cfm
 
 CONFIG_OS=$(gawk -F= '/^NAME/{print $2}' /etc/os-release)
@@ -12,13 +10,6 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 mkdir -p $TARGET_PROJECT_DIR
-
-if [[ $CONFIG_SUBDOMAIN_SUBLISTER = true ]]; then
-
-  git clone https://github.com/aboul3la/Sublist3r.git
-  mv Sublist3r $TARGET_PROJECT_DIR/other-tools
-
-fi
 
 if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
 
@@ -38,5 +29,14 @@ if [[ $CONFIG_STORE_RESULTS = true ]]; then
 
   apt install sqlite3
   cd $TARGET_PROJECT_DIR && sqlite3 ./state/tsbt.db -init ./state/initDb.sql
+
+fi
+
+if [[ $CONFIG_SUBDOMAIN_SUBLISTER = true ]]; then
+
+  mkdir $TARGET_PROJECT_DIR/other-tools
+  cd $TARGET_PROJECT_DIR/other-tools
+ 
+  git clone https://github.com/aboul3la/Sublist3r.git
 
 fi
