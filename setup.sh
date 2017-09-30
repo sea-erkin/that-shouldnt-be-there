@@ -19,7 +19,7 @@ if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
 
   cd $TARGET_GO_DIR/that-shouldnt-be-there && go get && go build
 
-  rm -rf $START_DIR
+ # rm -rf $START_DIR
 
 fi
 
