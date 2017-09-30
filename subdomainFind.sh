@@ -2,7 +2,7 @@
 
 startDirectory=`pwd`
 
-for domain in `cat ./state/domains`; do
+for domain in `cat domains.txt`; do
     
     sleep 0.5
 
