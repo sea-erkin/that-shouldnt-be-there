@@ -4,24 +4,23 @@ mkdir other-tools
 
 CONFIG_OS=$(gawk -F= '/^NAME/{print $2}' /etc/os-release)
 START_DIR=$(pwd)
-TARGET_GO_DIR=$HOME/go/src/github.com/sea-erkin/
+TARGET_GO_DIR=$HOME/go/src/github.com/sea-erkin
+TARGET_PROJECT_DIR=$TARGET_GO_DIR/that-shouldnt-be-there
+
+export GOROOT=$HOME/go
+export GOPATH=$HOME/go  
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+mkdir -p $TARGET_PROJECT_DIR
 
 if [[ $CONFIG_SUBDOMAIN_SUBLISTER = true ]]; then
 
   git clone https://github.com/aboul3la/Sublist3r.git
-  mv Sublist3r /other-tools
+  mv Sublist3r $TARGET_PROJECT_DIR/other-tools
 
 fi
 
-echo $CONFIG_OS
-
 if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
-
-  mkdir -p $TARGET_GO_DIR
-
-  export GOROOT=$HOME/go
-  export GOPATH=$HOME/go  
-  export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
   apt install golang-go	
 
