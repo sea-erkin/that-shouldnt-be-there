@@ -3,3 +3,4 @@ state/domains
 deploy.sh
 state/config.dev.json
 other-tools/
+domains.txt
