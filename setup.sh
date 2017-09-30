@@ -23,6 +23,7 @@ fi
 if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
 
   apt install golang-go	
+  apt install sqlite3
 
   git clone https://github.com/sea-erkin/that-shouldnt-be-there.git
   
