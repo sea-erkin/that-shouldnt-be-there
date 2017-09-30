@@ -16,7 +16,7 @@ for domain in `cat domains.txt`; do
     cd ./other-tools/Sublist3r/ && ./sublist3r.py -d $domain -o $fileName
     
     # Move file to subdomain todo directory
-    mv $fileName ../../state/subdomains/todo
+    mv $fileName ../../state/subdomains/todo/
 
     sleep 0.5
 
