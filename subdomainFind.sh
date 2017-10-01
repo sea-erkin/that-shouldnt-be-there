@@ -1,8 +1,8 @@
 # bin/sh
 
-startDirectory=`pwd`
+startDirectory=$(pwd)
 
-for domain in `cat domains.txt`; do
+for domain in $(cat domains.txt); do
     
     sleep 0.5
 

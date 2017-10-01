@@ -3,7 +3,7 @@
 startDirectory=`pwd`
 
 # Run Parse Logic
-cd $startDirectory && ./that-shouldnt-be-there -config=./state/config.json -parseSubdomain
+cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -parseSubdomain
 
 # Run Alert Logic
-cd $startDirectory && ./that-shouldnt-be-there -config=./state/config.json -alertSubdomain
+cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -alertSubdomain
