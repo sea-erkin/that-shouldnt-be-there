@@ -43,3 +43,19 @@ if [[ $CONFIG_SUBDOMAIN_SUBLISTER = true ]]; then
   cd Sublist3r && pip install -r requirements.txt
 
 fi
+
+if [[ $CONFIG_EYEWITNESS_RESULTS = true ]]; then
+  
+  mkdir $TARGET_PROJECT_DIR/other-tools/
+  cd $TARGET_PROJECT_DIR/other-tools/
+
+  # installs iceweasel
+  sudo add-apt-repository ppa:dirk-computer42/c42-backport
+
+  sudo apt-get update && sudo apt-get install iceweasel
+ 
+  git clone https://github.com/ChrisTruncer/EyeWitness.git
+  
+  cd EyeWitness && cd setup && ./setup.sh
+
+fi
