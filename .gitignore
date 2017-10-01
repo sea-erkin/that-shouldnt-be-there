@@ -1,4 +1,5 @@
 state/tsbt.db
+<<<<<<< HEAD
 state/subdomains/todo/*
 state/subdomains/done/*
 state/nmap/done/*
@@ -7,6 +8,8 @@ state/subdomains-resolve/done/*
 state/subdomans-resolve/todo/*
 state/eyewitness/done/*
 state/eyewitness/todo/*
+=======
+>>>>>>> 77def0ab1f805f3fcbb25288c252c512fc726794
 deploy.sh
 state/config.dev.json
 other-tools/
