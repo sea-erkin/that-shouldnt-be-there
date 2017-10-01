@@ -1,6 +1,13 @@
 state/tsbt.db
 state/subdomains/todo/*
 state/subdomains/done/*
+state/nmap/done/*
+state/nmap/todo/*
+state/subdomains-resolve/done/*
+state/subdomans-resolve/todo/*
+state/eyewitness/done/*
+state/eyewitness/todo/*
 deploy.sh
 state/config.dev.json
 other-tools/
+domains.txt
