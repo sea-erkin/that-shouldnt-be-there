@@ -2,17 +2,17 @@
 
 CONFIG_OS=$(gawk -F= '/^NAME/{print $2}' /etc/os-release)
 START_DIR=$(pwd)
-TARGET_GO_DIR=$HOME/go/src/github.com/sea-erkin/
-TARGET_PROJECT_DIR=$TARGET_GO_DIR/that-shouldnt-be-there/
+TARGET_GO_DIR=$HOME/go/src/github.com/sea-erkin
+TARGET_PROJECT_DIR=$TARGET_GO_DIR/that-shouldnt-be-there
 
 mkdir -p $HOME/goroot
 mkdir -p $TARGET_PROJECT_DIR
 
-if [[ $CONFIG_OS = '"Ubuntu"' ]]; then
+if [[ $CONFIG_OS = '"Ubuntu"' || $CONFIG_OS = '"Kali GNU/Linux"' ]]; then
 
   apt install golang-go	
 
-  cd .. && mv that-shouldnt-be-there/* $TARGET_PROJECT_DIR
+  cd .. && cp that-shouldnt-be-there/* $TARGET_PROJECT_DIR
 
   export GOROOT=$HOME/goroot
   export GOPATH=$HOME/go  
@@ -27,7 +27,7 @@ fi
 if [[ $CONFIG_STORE_RESULTS = true ]]; then
 
   apt install sqlite3
-  cd $TARGET_PROJECT_DIR && sqlite3 ./state/tsbt.db -init ./state/initDb.sql
+  cd $TARGET_PROJECT_DIR && sqlite3 ex1 ./state/tsbt.db -init ./state/initDb.sql
 
 fi
 
