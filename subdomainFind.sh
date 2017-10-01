@@ -3,8 +3,6 @@
 startDirectory=$(pwd)
 
 for domain in $(cat domains.txt); do
-    
-    sleep 0.5
 
     cd $startDirectory
 
@@ -15,10 +13,11 @@ for domain in $(cat domains.txt); do
     # Run Sublister
     cd ./other-tools/Sublist3r/ && ./sublist3r.py -d $domain -o $fileName
     
+    # Move file to the subdomain-more directory to get more subdomains based off the identified using altdns
+    cp $fileName ../../state/subdomains-more/todo/
+
     # Move file to subdomain todo directory
     mv $fileName ../../state/subdomains/todo/
-
-    sleep 0.5
 
 done;
 

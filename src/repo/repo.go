@@ -41,6 +41,7 @@ type HostDb struct {
 	Status      bool
 	Alert       bool
 	TimeScanned int64
+	Source      string
 }
 
 type IpHostDb struct {
@@ -385,13 +386,48 @@ func DbSetIpPortIdsStatus(ipPortIds []string, status string) bool {
 	return true
 }
 
-func DbViewHost(domainParam string) []HostDb {
+func DbViewHostUniqueDomains() []string {
+	rows, err := db.Query(`SELECT DISTINCT domain FROM host`)
+	checkErr(err)
+
+	var domains []string
+	var domain string
+
+	for rows.Next() {
+		err = rows.Scan(&domain)
+		checkErr(err)
+
+		domains = append(domains, domain)
+	}
+	rows.Close()
+	return domains
+}
+
+func DbViewHostUniqueSources() []string {
+	rows, err := db.Query(`SELECT DISTINCT source FROM host`)
+	checkErr(err)
+
+	var sources []string
+	var source string
+
+	for rows.Next() {
+		err = rows.Scan(&source)
+		checkErr(err)
+
+		sources = append(sources, source)
+	}
+	rows.Close()
+	return sources
+}
+
+func DbViewHost(domainParam, dataSource string) []HostDb {
 	print(domainParam, "DOMAIN")
-	rows, err := db.Query(`SELECT HostId, Host, Domain, Status, Alert, TimeScanned
+	rows, err := db.Query(`SELECT HostId, Host, Domain, Status, Alert, TimeScanned, Source
 		FROM Host
 		WHERE Status IN (0,1)
 		AND Alert = 0
-		AND Domain = ?`, domainParam)
+		AND Domain = ?
+		AND Source = ?`, domainParam, dataSource)
 	checkErr(err)
 
 	var hosts []HostDb
@@ -402,8 +438,9 @@ func DbViewHost(domainParam string) []HostDb {
 	var status bool
 	var alert bool
 	var timeScanned int64
+	var source string
 	for rows.Next() {
-		err = rows.Scan(&hostId, &host, &domain, &status, &alert, &timeScanned)
+		err = rows.Scan(&hostId, &host, &domain, &status, &alert, &timeScanned, &source)
 		checkErr(err)
 
 		hostDb := HostDb{
@@ -413,6 +450,7 @@ func DbViewHost(domainParam string) []HostDb {
 			Status:      status,
 			Alert:       alert,
 			TimeScanned: timeScanned,
+			Source:      source,
 		}
 
 		hosts = append(hosts, hostDb)
@@ -471,7 +509,7 @@ func DbCreateIpPort(ip string, protocol string, port string, service string, tim
 	return id
 }
 
-func DbInsertHostsForDomain(hosts []string, domainName string, timeString string) {
+func DbInsertHostsForDomain(hosts []string, domainName string, dataSource string, timeString string) {
 
 	timeScanned, err := strconv.ParseInt(timeString, 10, 64)
 
@@ -479,10 +517,10 @@ func DbInsertHostsForDomain(hosts []string, domainName string, timeString string
 
 	for _, host := range hosts {
 
-		stmt, err := db.Prepare("INSERT INTO HOST(Domain, Host, TimeScanned) VALUES (?, ?, ?)")
+		stmt, err := db.Prepare("INSERT INTO HOST(Domain, Host, Source, TimeScanned) VALUES (?, ?, ?, ?)")
 		checkErr(err)
 
-		res, err := stmt.Exec(domainName, host, timeScanned)
+		res, err := stmt.Exec(domainName, host, dataSource, timeScanned)
 		checkErr(err)
 
 		print("Host Inserted:", host)

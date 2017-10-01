@@ -222,65 +222,66 @@ func main() {
 
 	if *alertSubdomainFlag != false {
 
-		// read domain file
-		byteArray, err := ioutil.ReadFile(config.DomainFile)
-		checkErr(err)
-		fileString := string(byteArray[:])
-		print("domain string", fileString)
-		files := strings.Split(fileString, "\n")
+		domains := repo.DbViewHostUniqueDomains()
+		sources := repo.DbViewHostUniqueSources()
 
-		for _, file := range files {
+		for _, domain := range domains {
 
-			hosts := repo.DbViewHost(strings.ToLower(file))
-			if len(hosts) == 0 {
-				print("No Hosts to process alerts. Quitting.")
-				os.Exit(0)
+			for _, source := range sources {
+
+				hosts := repo.DbViewHost(domain, source)
+				if len(hosts) == 0 {
+					print("No Hosts to process alerts. Quitting.")
+					os.Exit(0)
+				}
+
+				print("Hosts Count", len(hosts))
+				print("Hosts", hosts)
+
+				// for every host, group by timestamp.
+				var hostMapTimestamp = make(map[int64][]repo.HostDb)
+				for _, host := range hosts {
+					hostMapTimestamp[host.TimeScanned] = append(hostMapTimestamp[host.TimeScanned], host)
+				}
+
+				print(len(hostMapTimestamp))
+
+				if len(hostMapTimestamp) == 1 {
+					print("No other hosts to compare against. Must be first run. Exit.")
+					os.Exit(0)
+				}
+
+				olderTimestamp, newerTimestamp := logic.GetHostCompareTimestamps(hostMapTimestamp)
+
+				print("Old hosts:", hostMapTimestamp[olderTimestamp])
+
+				newHosts, hostsToApprove := logic.GetNewApproveHosts(hostMapTimestamp, olderTimestamp, newerTimestamp)
+				missingHosts, hostsToInactivate := logic.GetMissingInactivateHosts(hostMapTimestamp, olderTimestamp, newerTimestamp)
+
+				print("Missing hosts:", missingHosts)
+				print("New Hosts", newHosts)
+
+				// Set status to an alert for missing hosts and new hosts
+				repo.DbCreateHostAlert(missingHosts)
+				repo.DbCreateHostAlert(newHosts)
+
+				print("Hosts to approve", hostsToApprove)
+				print("Hosts to inactivate", hostsToInactivate)
+
+				repo.DbSetHostSubdomainStatus(hostsToApprove, "Approved")
+				repo.DbSetHostSubdomainStatus(hostsToInactivate, "Inactive")
+
+				// Insert alert uuid entries so can be approved
+				repo.DbCreateAlertHostUuid(missingHosts)
+				repo.DbCreateAlertHostUuid(newHosts)
+
+				if len(newHosts) > 0 || len(missingHosts) > 0 {
+					body := createEmailBodyFromAlertableHosts(newHosts, missingHosts)
+					alert.SendMail(body, config.FromEmail, config.EmailPassword, config.EmailHost, config.EmailPort, config.Recipients)
+				}
+
 			}
 
-			print("Hosts Count", len(hosts))
-			print("Hosts", hosts)
-
-			// for every host, group by timestamp.
-			var hostMapTimestamp = make(map[int64][]repo.HostDb)
-			for _, host := range hosts {
-				hostMapTimestamp[host.TimeScanned] = append(hostMapTimestamp[host.TimeScanned], host)
-			}
-
-			print(len(hostMapTimestamp))
-
-			if len(hostMapTimestamp) == 1 {
-				print("No other hosts to compare against. Must be first run. Exit.")
-				os.Exit(0)
-			}
-
-			olderTimestamp, newerTimestamp := logic.GetHostCompareTimestamps(hostMapTimestamp)
-
-			print("Old hosts:", hostMapTimestamp[olderTimestamp])
-
-			newHosts, hostsToApprove := logic.GetNewApproveHosts(hostMapTimestamp, olderTimestamp, newerTimestamp)
-			missingHosts, hostsToInactivate := logic.GetMissingInactivateHosts(hostMapTimestamp, olderTimestamp, newerTimestamp)
-
-			print("Missing hosts:", missingHosts)
-			print("New Hosts", newHosts)
-
-			// Set status to an alert for missing hosts and new hosts
-			repo.DbCreateHostAlert(missingHosts)
-			repo.DbCreateHostAlert(newHosts)
-
-			print("Hosts to approve", hostsToApprove)
-			print("Hosts to inactivate", hostsToInactivate)
-
-			repo.DbSetHostSubdomainStatus(hostsToApprove, "Approved")
-			repo.DbSetHostSubdomainStatus(hostsToInactivate, "Inactive")
-
-			// Insert alert uuid entries so can be approved
-			repo.DbCreateAlertHostUuid(missingHosts)
-			repo.DbCreateAlertHostUuid(newHosts)
-
-			if len(newHosts) > 0 || len(missingHosts) > 0 {
-				body := createEmailBodyFromAlertableHosts(newHosts, missingHosts)
-				alert.SendMail(body, config.FromEmail, config.EmailPassword, config.EmailHost, config.EmailPort, config.Recipients)
-			}
 		}
 
 	}
@@ -338,9 +339,10 @@ func main() {
 
 			fileSplit := strings.Split(file.Name(), "_")
 			domainName := strings.ToLower(fileSplit[0])
+			dataSource := strings.ToLower(fileSplit[1])
 			timeScanned := fileSplit[2]
 
-			repo.DbInsertHostsForDomain(hosts, domainName, timeScanned)
+			repo.DbInsertHostsForDomain(hosts, domainName, dataSource, timeScanned)
 			err := ioutil.WriteFile(config.SubdomainLastCompleted, []byte(file.Name()), 0644)
 			checkErr(err)
 

@@ -1,9 +1,9 @@
 # bin/sh
 
-startDirectory=`pwd`
+startDirectory=$(pwd)
 
 # Run Parse Logic
-cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -parseSubdomain
+cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -parseSubdomain -d
 
 # Run Alert Logic
-cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -alertSubdomain
+cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -alertSubdomain -d
