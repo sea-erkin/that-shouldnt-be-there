@@ -26,3 +26,4 @@ for subdomainFile in $(ls $moreSubdomainsTodoDirectory); do
 
 done;
 
+cd $startDirectory && ./subdomainParse.sh

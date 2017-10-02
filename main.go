@@ -335,6 +335,10 @@ func main() {
 		checkErr(err)
 
 		for _, file := range files {
+			if string(file.Name()[0]) == "." {
+				continue
+			}
+
 			hosts := parser.ReadLines(config.SubdomainTodoDirectory + file.Name())
 
 			fileSplit := strings.Split(file.Name(), "_")
@@ -359,6 +363,9 @@ func main() {
 		checkErr(err)
 
 		for _, file := range files {
+			if string(file.Name()[0]) == "." {
+				continue
+			}
 			ipHosts := parser.ReadLines(config.SubdomainDoneResolveDirectory + file.Name())
 
 			fileSplit := strings.Split(file.Name(), "_")
