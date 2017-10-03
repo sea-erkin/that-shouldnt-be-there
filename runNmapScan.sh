@@ -1,17 +1,24 @@
 # bin/sh
 
-# Run Nmap
-sudo nmap -sS -Pn -A -v -iL ./state/hosts_nmap.txt -oX output_nmap.xml
+currentDir=$(pwd)
+todoDir="/state/nmap/todo"
+doneDir="/state/nmap/done"
 
-# Insert Records into Sqlite
-./that-shouldnt-be-there -config=./state/config.json -parseNmap
+for i in $(ls $todoDir); do
 
-# Alert logic
-./that-shouldnt-be-there -config=./state/config.json -alertPort
+    # only web
+    cd $currentDir/$todoDir && sudo nmap -sS -T 0 -p 80,443,8080,8000,8443 -iL $i -oX output_nmap.xml
 
-# Archive output file
-now=$(date +"%m-%d-%Y")
-fileName="output_nmap_"$now".xml"
-mv output_nmap.xml $fileName
-mv $fileName ./archive/
+    # Insert Records into Sqlite
+    cd $currentDir && ./that-shouldnt-be-there -config=./state/config.json -parseNmap
 
+    # Alert logic
+    cd $currentDir && ./that-shouldnt-be-there -config=./state/config.json -alertPort
+
+    # Archive output file
+    now=$(date +"%m-%d-%Y")
+    fileName="output_nmap_"$now".xml"
+    mv $currentDir/$todoDir/output_nmap.xml $currentDir/$todoDir/$fileName
+    mv $currentDir/$todoDir/$fileName $currentDir/$doneDir/$fileName
+
+done;

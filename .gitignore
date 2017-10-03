@@ -13,3 +13,4 @@ domains.txt
 that-shouldnt-be-there
 state/config.json
 state/subdomains/lastCompleted
+domains.txt
