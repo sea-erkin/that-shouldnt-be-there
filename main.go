@@ -24,12 +24,13 @@ import (
 var (
 	configFlag         = flag.String("c", "", "Config file location")
 	debugFlag          = flag.Bool("d", false, "Debug flag")
-	alertPortFlag      = flag.Bool("alertPort", false, "Alert port logic flag")
+	alertPortFlag      = flag.String("alertPort", "", "Alert port logic flag")
 	alertSubdomainFlag = flag.Bool("alertSubdomain", false, "Alert subdomain flag")
-	parseNmapDataFlag  = flag.Bool("parseNmap", false, "Parse Nmap data flag")
+	parseNmapDataFlag  = flag.String("parseNmap", "", "Parse Nmap data flag")
 	parseSubdomainFlag = flag.Bool("parseSubdomain", false, "Parse subdomain output. Must specify where to look for files")
 	parseHostIpFlag    = flag.Bool("parseHostIp", false, "Parses host ip output.")
 	approvalCodeFlag   = flag.String("approvalCode", "", "Approve UUID for alert code")
+	sendScreenshotFlag = flag.Bool("sendScreenshot", false, "Sends screenshots of identified web hosts")
 )
 
 var (
@@ -55,6 +56,10 @@ type Config struct {
 	SubdomainTodoResolveDirectory    string   `json:"subdomainTodoResolveDirectory"`
 	SubdomainDoneResolveDirectory    string   `json:"subdomainDoneResolveDirectory"`
 	SubdomainArchiveResolveDirectory string   `json:"subdomainArchiveResolveDirectory"`
+	ScreenshotDoneDirectory          string   `json:"screenshotDoneDirectory"`
+	ScreenshotTodoDirectory          string   `json:"screenshotTodoDirectory"`
+	ScreenshotArchiveDirectory       string   `json:"screenshotArchiveDirectory"`
+	NmapTodoDirectory                string   `json:"nmapTodoDirectory"`
 	EmailHost                        string   `json:"emailHost"`
 	EmailPort                        string   `json:"emailPort"`
 	FromEmail                        string   `json:"fromEmail"`
@@ -78,8 +83,9 @@ func checkFlags() {
 		log.Fatal("Must supply a config file.")
 	}
 
-	if *alertPortFlag == false && *parseNmapDataFlag == false && *approvalCodeFlag == "" &&
-		*parseSubdomainFlag == false && *alertSubdomainFlag == false && *parseHostIpFlag == false {
+	if *alertPortFlag == "" && *parseNmapDataFlag == "" && *approvalCodeFlag == "" &&
+		*parseSubdomainFlag == false && *alertSubdomainFlag == false && *parseHostIpFlag == false &&
+		*sendScreenshotFlag == false {
 		log.Fatal("Must specify something to do. Either alert, parse data, or approve an alert.")
 	}
 }
@@ -101,7 +107,7 @@ func main() {
 	}
 
 	// Alert nmap logic. Move to it's own shit.
-	if *alertPortFlag {
+	if *alertPortFlag != "" {
 		print("Starting analysis for changes in open external ports")
 		// get ip ports
 		ipPorts := repo.DbViewIpPort()
@@ -147,6 +153,9 @@ func main() {
 					}
 				}
 
+				// check the status too
+				print("same ports", samePorts)
+				print("approved ports", approvedPorts)
 				if len(samePorts) == len(approvedPorts) {
 					// stop here and set the new ports to approved, old ports to not approved.
 					print("Ports are the same but have a newer timestamp. Updating entries")
@@ -189,6 +198,9 @@ func main() {
 					repo.DbCreateAlertIpPortUuid(ipPortId, uuid)
 				}
 
+				// Prep identified ports to take screenshot of new host ports
+				prepNmapScreenshot(addedPorts, *alertPortFlag, config.ScreenshotTodoDirectory)
+
 				// Prep and send E-mail code. Will eventually support multiple alert formats such as text & app push notifs
 				body := createEmailBodyFromAlertablePorts(addedPorts, missingPorts)
 				alert.SendMail(body, config.FromEmail, config.EmailPassword, config.EmailHost, config.EmailPort, config.Recipients)
@@ -213,7 +225,7 @@ func main() {
 				for _, item := range latestEntries {
 					ipPortIdsToMarkApproved = append(ipPortIdsToMarkApproved, strconv.FormatInt(item.IPPortId, 10))
 				}
-
+				prepNmapScreenshot(latestEntries, *alertPortFlag, config.ScreenshotTodoDirectory)
 				print("Approving the following IPPortIds", ipPortIdsToMarkApproved)
 				repo.DbSetIpPortIdsStatus(ipPortIdsToMarkApproved, "Approved")
 			}
@@ -286,9 +298,9 @@ func main() {
 
 	}
 
-	if *parseNmapDataFlag {
+	if *parseNmapDataFlag != "" {
 		print("Beginning XML Parse")
-		mv, err := getMapFromXmlFile(config.NmapParseFile)
+		mv, err := getMapFromXmlFile(*parseNmapDataFlag)
 		if err != nil {
 			print(err)
 		}
@@ -324,7 +336,7 @@ func main() {
 		// insert into sql lite
 		for _, hostPort := range hostPorts {
 			print("Inserting the following record:", hostPort)
-			repo.DbCreateIpPort(hostPort.IP, hostPort.Protocol, hostPort.Port, hostPort.Service, hostPort.TimeScanned)
+			repo.DbCreateIpPort(hostPort.IP, hostPort.Protocol, hostPort.Port, hostPort.Service, hostPort.State, hostPort.TimeScanned)
 		}
 	}
 
@@ -354,6 +366,31 @@ func main() {
 			err = os.Rename(config.SubdomainTodoDirectory+file.Name(), config.SubdomainDoneDirectory+file.Name())
 
 			checkErr(err)
+		}
+	}
+
+	// loop through every file in the eyewitness done directory and then
+	// send whatever is in there
+	// once it's done move it to the archive directory
+	if *sendScreenshotFlag != false {
+		files, err := ioutil.ReadDir(config.ScreenshotDoneDirectory)
+		checkErr(err)
+
+		for _, file := range files {
+			if string(file.Name()[0]) == "." {
+				continue
+			}
+
+			print("Sending email for the following file: ", file.Name())
+
+			alert.SendMailAttachment("", config.FromEmail, config.EmailPassword,
+				config.ScreenshotDoneDirectory+file.Name(), config.EmailHost,
+				config.EmailPort, config.Recipients)
+
+			err = os.Rename(config.ScreenshotDoneDirectory+file.Name(), config.ScreenshotArchiveDirectory+file.Name())
+
+			checkErr(err)
+
 		}
 	}
 
@@ -387,7 +424,7 @@ func main() {
 
 func containsIpPort(s []repo.IPPortDb, e repo.IPPortDb) bool {
 	for _, a := range s {
-		if a.Port == e.Port {
+		if a.Port == e.Port && a.State == e.State {
 			return true
 		}
 	}
@@ -434,13 +471,35 @@ func getPortFromXml(portsSlice interface{}, hostAddress string, hostEndTime int6
 func createEmailBodyFromAlertablePorts(addedPorts []repo.IPPortDb, missingPorts []repo.IPPortDb) string {
 	body := "New port changes identified \n ================== \n"
 	for _, port := range addedPorts {
-		body += port.IP + ":" + port.Port + "\t [" + port.Protocol + "]" + "\t Added \n"
+		body += "New State \t" + port.IP + ":" + port.Port + "\t [" + port.Protocol + "]" + "\t" + port.State + "\n"
 	}
 	for _, port := range missingPorts {
-		body += port.IP + ":" + port.Port + "\t [" + port.Protocol + "]" + "\t Missing \n"
+		body += "Previous State \t" + port.IP + ":" + port.Port + "\t [" + port.Protocol + "]" + "\t" + port.State + "\n"
 	}
 	print("Email Body", body)
 	return body
+}
+
+func prepNmapScreenshot(ipPorts []repo.IPPortDb, fileName, screenshotTodoDirectory string) {
+	// Prep identified ports to take screenshot of new host ports
+
+	print("Prepping screenshots")
+
+	var portsToScreenshot = make([]string, 0)
+	for _, item := range ipPorts {
+		url := item.IP + ":" + item.Port
+		portsToScreenshot = append(portsToScreenshot, url)
+	}
+
+	print("Ports to screenshot:", portsToScreenshot)
+	// Create file in nmap todo directory with the same params
+	newLineString := strings.Join(portsToScreenshot, "\n")
+	d1 := []byte(newLineString)
+
+	print("File name", fileName)
+	print("Screenshot directory: ", screenshotTodoDirectory)
+	err := ioutil.WriteFile(screenshotTodoDirectory+fileName, d1, 0644)
+	checkErr(err)
 }
 
 func createEmailBodyFromAlertableHosts(newHosts []repo.HostDb, missingHosts []repo.HostDb) string {

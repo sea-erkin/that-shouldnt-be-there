@@ -29,6 +29,7 @@ type IPPortDb struct {
 	IP          string
 	Port        string
 	Service     string
+	State       string
 	IsApproved  bool
 	Alert       bool
 	DateScanned int64
@@ -66,7 +67,7 @@ func checkErr(err error) {
 }
 
 func DbGetApprovedPorts(ipParam string) []IPPortDb {
-	rows, err := db.Query(`SELECT IpPortId, Ip, Protocol, Port, Service, IsApproved, TimeScanned
+	rows, err := db.Query(`SELECT IpPortId, Ip, Protocol, Port, Service, IsApproved, State, TimeScanned
 			     		   FROM IPPort
 						   WHERE IP = ?
 						   AND IsApproved = 1`, ipParam)
@@ -80,9 +81,10 @@ func DbGetApprovedPorts(ipParam string) []IPPortDb {
 	var port string
 	var service string
 	var isApproved bool
+	var state string
 	var timeScanned int64
 	for rows.Next() {
-		err = rows.Scan(&ipPortId, &ip, &protocol, &port, &service, &isApproved, &timeScanned)
+		err = rows.Scan(&ipPortId, &ip, &protocol, &port, &service, &isApproved, &state, &timeScanned)
 		checkErr(err)
 
 		ipPortDb := IPPortDb{
@@ -92,6 +94,7 @@ func DbGetApprovedPorts(ipParam string) []IPPortDb {
 			Port:        port,
 			Service:     service,
 			IsApproved:  isApproved,
+			State:       state,
 			DateScanned: timeScanned,
 		}
 
@@ -461,7 +464,7 @@ func DbViewHost(domainParam, dataSource string) []HostDb {
 }
 
 func DbViewIpPort() []IPPortDb {
-	rows, err := db.Query(`SELECT IpPortId, Ip, Protocol, Port, Service, IsApproved, TimeScanned
+	rows, err := db.Query(`SELECT IpPortId, Ip, Protocol, Port, Service, IsApproved, State, TimeScanned
 						   FROM IPPort
 						   WHERE IsApproved = 0
 						   AND Alert = 0`)
@@ -475,9 +478,10 @@ func DbViewIpPort() []IPPortDb {
 	var port string
 	var service string
 	var isApproved bool
+	var state string
 	var timeScanned int64
 	for rows.Next() {
-		err = rows.Scan(&ipPortId, &ip, &protocol, &port, &service, &isApproved, &timeScanned)
+		err = rows.Scan(&ipPortId, &ip, &protocol, &port, &service, &isApproved, &state, &timeScanned)
 		checkErr(err)
 
 		ipPortDb := IPPortDb{
@@ -487,6 +491,7 @@ func DbViewIpPort() []IPPortDb {
 			Port:        port,
 			Service:     service,
 			IsApproved:  isApproved,
+			State:       state,
 			DateScanned: timeScanned,
 		}
 
@@ -496,11 +501,12 @@ func DbViewIpPort() []IPPortDb {
 	return ipPorts
 }
 
-func DbCreateIpPort(ip string, protocol string, port string, service string, timeScanned int64) int64 {
-	stmt, err := db.Prepare("INSERT INTO IPPort(IP, Protocol, Port, Service, TimeScanned) values(?,?,?,?,?)")
+func DbCreateIpPort(ip, protocol, port, service, state string, timeScanned int64) int64 {
+	stmt, err := db.Prepare("INSERT INTO IPPort(IP, Protocol, Port, Service, State, TimeScanned) values(?,?,?,?,?,?)")
 	checkErr(err)
 
-	res, err := stmt.Exec(ip, protocol, port, service, timeScanned)
+	print("State", state)
+	res, err := stmt.Exec(ip, protocol, port, service, state, timeScanned)
 	checkErr(err)
 
 	id, err := res.LastInsertId()

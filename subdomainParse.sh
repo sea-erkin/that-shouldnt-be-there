@@ -7,3 +7,6 @@ cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -parseSubd
 
 # Run Alert Logic
 cd $startDirectory && ./that-shouldnt-be-there -c=./state/config.json -alertSubdomain -d
+
+# Run Resolves
+cd $startDirectory && ./subdomainResolve.sh

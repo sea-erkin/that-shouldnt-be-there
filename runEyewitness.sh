@@ -4,7 +4,7 @@ currentDir=$(pwd)
 toolDir="/other-tools/phantomjs/"
 targetDir="/state/eyewitness/todo"
 doneDir="/state/eyewitness/done"
-reportDir="/state/eyewitness/report"
+archive="/state/eyewitness/archive"
 
 for i in $(ls $currentDir/$targetDir); do
 
@@ -26,3 +26,7 @@ fileName="screenshot_"$now".tar.gz"
 cd $currentDir/$doneDir && tar -czvf $fileName success*
 
 rm $currentDir/$doneDir/success*
+
+mv $currentDir/$targetDir/* $currentDir/$archive/
+
+cd $currentDir && ./that-shouldnt-be-there -sendScreenshot -c=./state/config.json -d

@@ -45,3 +45,5 @@ done
 
 rm $nmapDir/*.tmp
 rm $eyeWitnessDir/*.tmp
+
+cd $pwd && ./runNmapScan.sh

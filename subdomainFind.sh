@@ -25,4 +25,4 @@ done;
 
 echo "Starting parse and alert logic"
 
-cd $startDirectory && ./subdomainParse.sh
+cd $startDirectory && ./subdomainFindAltdns.sh
