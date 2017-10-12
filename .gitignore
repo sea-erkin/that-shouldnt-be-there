@@ -5,12 +5,13 @@ state/nmap/done/*
 state/nmap/todo/*
 state/subdomains-resolve/done/*
 state/subdomans-resolve/todo/*
-state/eyewitness/done/*
-state/eyewitness/todo/*
+state/screenshot/done/*
+state/screenshot/todo/*
+state/screenshot/archive/*
 deploy.sh
-other-tools/
+other-tools/altdns/
+other-tools/Sublist3r/
 domains.txt
 that-shouldnt-be-there
 state/config.json
 state/subdomains/lastCompleted
-domains.txt

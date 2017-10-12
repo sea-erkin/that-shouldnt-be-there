@@ -2,12 +2,33 @@ package common
 
 import (
 	"crypto/rand"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/sea-erkin/that-shouldnt-be-there/src/dto"
 )
+
+func GetConfig(configLocation string) dto.Config {
+	file, e := ioutil.ReadFile(configLocation)
+	if e != nil {
+		fmt.Printf("File error: %v\n", e)
+		os.Exit(1)
+	}
+
+	var config dto.Config
+	json.Unmarshal(file, &config)
+	return config
+}
+
+func CheckErr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 // ReadFile reads in a filename as a string and returns the contents of the file as byte array
 func ReadFile(filename string) []byte {

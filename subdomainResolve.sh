@@ -1,13 +1,13 @@
 # /bin/sh
 
 # Resolves subdomains found from recon to ip addresses
-# Puts IPs in nmap todo and hosts/ips in eyewitness todo
+# Puts IPs in nmap todo and hosts/ips in screenshot todo
 
 pwd=$(pwd)
 targetDir="./state/subdomains-resolve/todo"
 doneDir="./state/subdomains-resolve/done"
 nmapDir="./state/nmap/todo"
-eyeWitnessDir="./state/eyewitness/todo"
+screenshotDir="./state/screenshot/todo"
 
 # Resolve hostnames to ips
 for i in $(ls $targetDir); do
@@ -25,7 +25,7 @@ done
 rm $doneDir/*.tmp
 rm $targetDir/*
 
-# Prep resolved ips for nmap and eyewitness
+# Prep resolved ips for nmap and screenshot
 for i in $(ls $doneDir); do 
 
   for j in $(cat $doneDir/$i | sort | uniq); do
@@ -33,17 +33,17 @@ for i in $(ls $doneDir); do
     # prep ips for nmap output
     echo $j | cut -d "_" -f 1 >> $nmapDir/$i.tmp
   
-    # prep ips, hosts, for eyewitness
-    echo $j | tr _ '\n' >> $eyeWitnessDir/$i.tmp
+    # prep ips, hosts, for screenshot
+    echo $j | tr _ '\n' >> $screenshotDir/$i.tmp
 
   done
 
   cat $nmapDir/$i.tmp | sort | uniq > $nmapDir/$i
-  cat $eyeWitnessDir/$i.tmp | sort | uniq > $eyeWitnessDir/$i
+  cat $screenshotDir/$i.tmp | sort | uniq > $screenshotDir/$i
 
 done
 
 rm $nmapDir/*.tmp
-rm $eyeWitnessDir/*.tmp
+rm $screenshotDir/*.tmp
 
 cd $pwd && ./runNmapScan.sh

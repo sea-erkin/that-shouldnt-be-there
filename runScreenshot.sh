@@ -2,9 +2,9 @@
 
 currentDir=$(pwd)
 toolDir="/other-tools/phantomjs/"
-targetDir="/state/eyewitness/todo"
-doneDir="/state/eyewitness/done"
-archive="/state/eyewitness/archive"
+targetDir="/state/screenshot/todo"
+doneDir="/state/screenshot/done"
+archive="/state/screenshot/archive"
 
 for i in $(ls $currentDir/$targetDir); do
 

@@ -23,4 +23,4 @@ for i in $(ls $todoDir); do
 
 done;
 
-cd $currentDir && ./runEyewitness.sh
+cd $currentDir && ./runScreenshot.sh
