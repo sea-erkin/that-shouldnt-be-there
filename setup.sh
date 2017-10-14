@@ -84,15 +84,65 @@ case ${machine} in
   ;;
   Linux)
     # Get the flavor of linux and install golang respectively of each distro. Arch, ubuntu/kali for now
-    apt install golang-go	
+    
+    # OS Specific Installation Statement
+    case ${osinfo} in
+    # Kali 2 dependency Install
+    Kali2)   
+    ;;
+    # Kali Dependency Installation
+    Kali)
+    ;;
+    # Debian 7+ Dependency Installation
+    Debian)
+    ;;
+    # Ubuntu Dependency Installation
+    Ubuntu)
+   
+      sudo apt-get update
+      sudo apt-get install build-essential chrpath libssl-dev libxft-dev
+ 
+      apt install golang-go	
+      cd .. && cp -r that-shouldnt-be-there/ $TARGET_PROJECT_DIR
 
-    cd .. && cp that-shouldnt-be-there/* $TARGET_PROJECT_DIR
+      export GOROOT=$HOME/goroot
+      export GOPATH=$HOME/go  
+      export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
-    export GOROOT=$HOME/goroot
-    export GOPATH=$HOME/go  
-    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+      cd $TARGET_PROJECT_DIR && go get && go build
+      
+      # install phantomjs
+      sudo apt-get install libfreetype6 libfreetype6-dev
+      sudo apt-get install libfontconfig1 libfontconfig1-dev
 
-    cd $TARGET_PROJECT_DIR && go get && go build
+      export PHANTOM_JS="phantomjs-1.9.8-linux-x86_64"
+      wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
+      sudo tar xvjf $PHANTOM_JS.tar.bz2
+      
+      sudo mv $PHANTOM_JS /usr/local/share
+      sudo ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
+
+      ln -s $(which phantomjs) ./other-tools/phantomjs/phantomjs    
+      rm phantomjs-1.9.8-linux-x86_64 
+
+      # install sqlite3
+      echo
+      echo "[*] Installing sqlite3 binaries"
+      sudo apt-get install sqlite3 libsqlite3-dev    
+      
+      mkdir ./other-tools/sqlite3
+
+      ln -s $(which sqlite3) ./other-tools/sqlite/sqlite3    
+
+      cd $TARGET_PROJECT_DIR
+      echo "[*] Installed sqlite3"
+    ;;
+    # Notify Manual Installation Requirement And Exit
+    *)
+      echo "[Error]: ${osinfo} is not supported by this setup script."
+      echo
+      exit 1
+    esac
     ;;
   *)
   echo 'Machine not detected'
