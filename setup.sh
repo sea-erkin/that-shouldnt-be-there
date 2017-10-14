@@ -1,6 +1,6 @@
 #!/bin/bash
 # Import config
-. ./config.cfm
+. ./config.cfg
 
 # Global Variables
 userid=$(id -u)
@@ -22,7 +22,7 @@ TARGET_PROJECT_DIR=$TARGET_GO_DIR/that-shouldnt-be-there
 
 # Make go directories
 mkdir -p $HOME/goroot
-mkdir -p $TARGET_PROJECT_DIR
+mkdir -p $TARGET_GO_DIR
 
 clear
 
@@ -45,10 +45,19 @@ case ${machine} in
     # install golang
     echo
     echo "[*] Installing golang to build source"
-    wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://storage.googleapis.com/golang/go1.9.1.darwin-amd64.tar.gz
+    #wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://storage.googleapis.com/golang/go1.9.1.darwin-amd64.tar.gz
     tar -C /usr/local -xzf go1.9.1.darwin-amd64.tar.gz
     export PATH=$PATH:/usr/local/go/bin
     echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bash_profile
+    rm go1.9.1.darwin-amd64.tar.gz
+
+    cd .. && cp -r that-shouldnt-be-there/ $TARGET_PROJECT_DIR
+
+    export GOROOT=$HOME/goroot
+    export GOPATH=$HOME/go  
+    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+    cd $TARGET_PROJECT_DIR && go get && go build
 
     # install phantomjs
     echo
