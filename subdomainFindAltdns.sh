@@ -1,4 +1,4 @@
-# bin/sh
+# bin/bash
 
 startDirectory=$(pwd)
 moreSubdomainsTodoDirectory=$startDirectory'/state/subdomains-more/todo'

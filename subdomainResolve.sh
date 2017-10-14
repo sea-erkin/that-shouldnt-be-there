@@ -1,4 +1,4 @@
-# /bin/sh
+# bin/bash
 
 # Resolves subdomains found from recon to ip addresses
 # Puts IPs in nmap todo and hosts/ips in screenshot todo

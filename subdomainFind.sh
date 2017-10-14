@@ -1,4 +1,7 @@
-# bin/sh
+# bin/bash
+
+# Import config
+. ./config.cfg
 
 startDirectory=$(pwd)
 
@@ -21,8 +24,12 @@ for domain in $(cat domains.txt); do
 
 done;
 
-# Run Next Script which parses and inserts the records into database.
+if [[ $CONFIG_SUBDOMAIN_ALTDNS = true ]]; then
+    echo "Running alt-dns to identify more subdomains"
+    cd $startDirectory && ./subdomainFindAltdns.sh
+else
+    echo "Saving subdomain results"
+    cd $startDirectory && ./subdomainParse.sh
+fi
 
-echo "Starting parse and alert logic"
 
-cd $startDirectory && ./subdomainFindAltdns.sh

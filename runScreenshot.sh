@@ -1,4 +1,4 @@
-# /bin/sh
+# bin/bash
 
 currentDir=$(pwd)
 toolDir="/other-tools/phantomjs/"
