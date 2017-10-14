@@ -128,6 +128,11 @@ echo "[*] Initializing sqlite3 database to store results"
 mv tsbt.db ./state
 echo "[*] Initialized sqlite3 database"
 
+# change permissions of folder to current user
+cd $TARGET_PROJECT_DIR
+cd ..
+chown -R $(whoami) that-shouldnt-be-there/
+
 # if [ ${MACHINE_TYPE} == 'x86_64' ]; then
 #     wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
 #     tar -xvf phantomjs-2.1.1-linux-x86_64.tar.bz2
