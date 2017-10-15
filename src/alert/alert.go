@@ -1,7 +1,7 @@
 package alert
 
 import (
-	"io/ioutil"
+	"os"
 	"log"
 	"net/mail"
 	"net/smtp"
@@ -52,22 +52,26 @@ func SendMail(body, fromEmail, password, emailHost, emailPort string, to []strin
 func PrepNmapScreenshot(ipPorts []repo.IPPortDb, fileName, screenshotTodoDirectory string) {
 	// Prep identified ports to take screenshot of new host ports
 
-	print("Prepping screenshots")
+	print("Prepping screenshots for ports identified as open")
 
 	var portsToScreenshot = make([]string, 0)
 	for _, item := range ipPorts {
-		url := item.IP + ":" + item.Port
-		portsToScreenshot = append(portsToScreenshot, url)
+	  if item.State == "open" {
+            url := item.IP + ":" + item.Port
+	    portsToScreenshot = append(portsToScreenshot, url)
+	  }
 	}
 
 	print("Ports to screenshot:", portsToScreenshot)
 	// Create file in nmap todo directory with the same params
 	newLineString := strings.Join(portsToScreenshot, "\n")
-	d1 := []byte(newLineString)
+	d1 := newLineString
 
 	print("File name", fileName)
 	print("Screenshot directory: ", screenshotTodoDirectory)
-	err := ioutil.WriteFile(screenshotTodoDirectory+fileName, d1, 0644)
+	f, err := os.OpenFile(screenshotTodoDirectory+fileName, os.O_APPEND|os.O_WRONLY, 0666)
+	_, err = f.WriteString(d1)
+	f.Close()
 	common.CheckErr(err)
 }
 

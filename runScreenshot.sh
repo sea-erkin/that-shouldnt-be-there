@@ -8,6 +8,11 @@ archive="/state/screenshot/archive"
 
 for i in $(ls $currentDir/$targetDir); do
 
+  # remove duplicates
+  cat $currentDir/$targetDir/$i | sort | uniq > $i.tmp
+  cat $i.tmp > $i
+  rm $i.tmp
+
   for j in $(cat $currentDir/$targetDir/$i); do
 
     cd $currentDir/$toolDir && phantomjs screenshot.js "http://"$j
