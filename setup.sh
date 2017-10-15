@@ -132,7 +132,7 @@ case ${machine} in
       
       mkdir ./other-tools/sqlite3
 
-      ln -s $(which sqlite3) ./other-tools/sqlite/sqlite3    
+      ln -s $(which sqlite3) ./other-tools/sqlite3/sqlite3    
 
       cd $TARGET_PROJECT_DIR
       echo "[*] Installed sqlite3"
