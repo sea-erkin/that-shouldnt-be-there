@@ -9,3 +9,4 @@ rm ./state/subdomains-more/todo/*
 rm ./state/subdomains-more/done/*
 rm ./state/subdomains-resolve/todo/*
 rm ./state/subdomains-resolve/done/*
+rm ./state/subdomains-resolve/archive/*
