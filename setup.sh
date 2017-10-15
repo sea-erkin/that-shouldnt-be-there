@@ -123,7 +123,8 @@ case ${machine} in
       sudo ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
 
       ln -s $(which phantomjs) ./other-tools/phantomjs/phantomjs    
-      rm phantomjs-1.9.8-linux-x86_64 
+      rm phantomjs-1.9.8-linux-x86_64.tar.bz2
+      rm -rf phantomjs-1.9.8-linux-x86_64
 
       # install sqlite3
       echo
