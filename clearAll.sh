@@ -1,0 +1,11 @@
+rm ./state/nmap/todo/*
+rm ./state/nmap/done/*
+rm ./state/screenshot/todo/*
+rm ./state/screenshot/done/*
+rm ./state/screenshot/archive/*
+rm ./state/subdomains/todo/*
+rm ./state/subdomains/done/*
+rm ./state/subdomains-more/todo/*
+rm ./state/subdomains-more/done/*
+rm ./state/subdomains-resolve/todo/*
+rm ./state/subdomains-resolve/done/*
