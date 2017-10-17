@@ -12,3 +12,7 @@ The tool can be broken down into the following steps:
 4. Screenshot identified open ports for provided IP addresses and subdomains. Output: Images
 5. Tracking to identify changes over time. Output: Data stored in sqlite database
 6. Alerting on identified new hosts or open ports. Output: Email
+
+# Configuration
+Currently the alerting module is email based. In order to receive alerts, you must configure an authenticated SMTP account in the ./state/config.json file.
+
