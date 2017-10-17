@@ -6,15 +6,18 @@ identified for a target domain or a system with 8080 open externally which did n
 # How it works
 The tool can be broken down into the following steps:
 
-1. Subdomain identification via Sublist3r and AltDNS. Output: Subdomains
-2. DNS resolving identified subdomains. Output: IP addresses
-3. Nmap scanning IP addresses for common web ports. Output: Ports
-4. Screenshot identified open ports for provided IP addresses and subdomains. Output: Images
-5. Tracking to identify changes over time. Output: Data stored in sqlite database
-6. Alerting on identified new hosts or open ports. Output: Email
+1. User provides new line separated target domains via domains.txt file.
+2. Subdomain identification via Sublist3r and AltDNS. Output: Subdomains
+3. DNS resolving identified subdomains. Output: IP addresses
+4. Nmap scanning IP addresses for common web ports. Output: Ports
+5. Screenshot identified open ports for provided IP addresses and subdomains. Output: Images
+6. Tracking to identify changes over time. Output: Data stored in sqlite database
+7. Alerting on identified new hosts or open ports. Output: Email
 
 # Configuration
 Currently the alerting module is email based. In order to receive alerts, you must configure an authenticated SMTP account in the ./state/config.json file.
 
-# Use Cases
-The main benefit of TSBT is that changes are tracked over time. If you are an organization and are not confident about your external presence, you can configure TSBT to run on your identified external assets and alert you if any changes have happened. Let's say a lousy developer like myself spun up a webserver on a host they did not know was externally facing and identified by TSBT. TSBT would create an alert and send you a screenshot of the webserver so you can determine for yourself whether the identified web enbled system is legitimate.
+# Use Case
+The main benefit of TSBT is that changes are tracked over time. If you are an organization and are not confident about your external presence, you can configure TSBT to run on your identified external assets and alert you if any changes have happened. Let's say a lousy developer like myself spun up a webserver on a host they did not know was externally facing. TSBT would create an alert and send you a screenshot of the webpage so you can determine for yourself whether the identified web enbled system is legitimate.
+
+If you are a pentester and would like to automate a portion of your recon phase, this is certainly a great tool to run. If you are a pentester on a longer term external engagement, you could configure TSBT to run and alert you if any additional hosts were identified or ports were opened since you first performed your recon.
