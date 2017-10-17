@@ -17,7 +17,7 @@ The tool can be broken down into the following steps:
 # Configuration
 Currently the alerting module is email based. In order to receive alerts, you must configure an authenticated SMTP account in the ./state/config.json file.
 
-# Use Case
+# Use Cases
 The main benefit of TSBT is that changes are tracked over time. If you are an organization and are not confident about your external presence, you can configure TSBT to run on your identified external assets and alert you if any changes have happened. Let's say a lousy developer like myself spun up a webserver on a host they did not know was externally facing. TSBT would create an alert and send you a screenshot of the webpage so you can determine for yourself whether the identified web enbled system is legitimate.
 
 If you are a pentester and would like to automate a portion of your recon phase, this is certainly a great tool to run. If you are a pentester on a longer term external engagement, you could configure TSBT to run and alert you if any additional hosts were identified or ports were opened since you first performed your recon.
