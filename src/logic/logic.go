@@ -157,7 +157,7 @@ func AlertSubdomains() ([]repo.HostDb, []repo.HostDb) {
 
 	domains := repo.DbViewHostUniqueDomains()
 	sources := repo.DbViewHostUniqueSources()
-	
+
 	print("Domains to alert subdomains", domains)
 	print("Domains to alert sources", sources)
 
@@ -169,8 +169,8 @@ func AlertSubdomains() ([]repo.HostDb, []repo.HostDb) {
 
 			hosts := repo.DbViewHost(domain, source)
 			if len(hosts) == 0 {
-				print("No Hosts to process alerts. Quitting.")
-				os.Exit(0)
+				print("No Hosts to process alerts. Skipping.")
+				continue
 			}
 
 			print("Hosts Count", len(hosts))
@@ -185,7 +185,7 @@ func AlertSubdomains() ([]repo.HostDb, []repo.HostDb) {
 			print(len(hostMapTimestamp))
 
 			if len(hostMapTimestamp) == 1 {
-				print("No other hosts to compare against. Must be first run. Exit.")
+				print("No other hosts to compare against. Must be first run. Skipping.")
 				continue
 			}
 
