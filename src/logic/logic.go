@@ -157,6 +157,9 @@ func AlertSubdomains() ([]repo.HostDb, []repo.HostDb) {
 
 	domains := repo.DbViewHostUniqueDomains()
 	sources := repo.DbViewHostUniqueSources()
+	
+	print("Domains to alert subdomains", domains)
+	print("Domains to alert sources", sources)
 
 	var missingHostsAll = make([]repo.HostDb, 0)
 	var newHostsAll = make([]repo.HostDb, 0)
@@ -183,7 +186,7 @@ func AlertSubdomains() ([]repo.HostDb, []repo.HostDb) {
 
 			if len(hostMapTimestamp) == 1 {
 				print("No other hosts to compare against. Must be first run. Exit.")
-				os.Exit(0)
+				continue
 			}
 
 			olderTimestamp, newerTimestamp := GetHostCompareTimestamps(hostMapTimestamp)
