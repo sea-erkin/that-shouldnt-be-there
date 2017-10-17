@@ -16,3 +16,5 @@ The tool can be broken down into the following steps:
 # Configuration
 Currently the alerting module is email based. In order to receive alerts, you must configure an authenticated SMTP account in the ./state/config.json file.
 
+# Use Cases
+The main benefit of TSBT is that changes are tracked over time. If you are an organization and are not confident about your external presence, you can configure TSBT to run on your identified external assets and alert you if any changes have happened. Let's say a lousy developer like myself spun up a webserver on a host they did not know was externally facing and identified by TSBT. TSBT would create an alert and send you a screenshot of the webserver so you can determine for yourself whether the identified web enbled system is legitimate.
