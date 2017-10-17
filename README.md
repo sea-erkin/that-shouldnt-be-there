@@ -10,4 +10,5 @@ The tool can be broken down into the following steps:
 2. DNS resolving identified subdomains. Output: IP addresses
 3. Nmap scanning IP addresses for common web ports. Output: Ports
 4. Screenshot identified open ports for provided IP addresses and subdomains. Output: Images
-5. Tracking\Alerting to identify changes over time. Output: Data stored in sqlite database
+5. Tracking to identify changes over time. Output: Data stored in sqlite database
+6. Alerting on identified new hosts or open ports. Output: Email
