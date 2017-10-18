@@ -16,10 +16,28 @@ The tool can be broken down into the following steps:
 6. Tracking to identify changes over time. Output: Data stored in sqlite database
 7. Alerting on identified new hosts or open ports. Output: Email
 
+# Installation
+```
+git clone https://github.com/sea-erkin/that-shouldnt-be-there.git
+cd $GOPATH/src/github.com/sea-erkin/that-shouldnt-be-there/
+go get
+go build
+vim domains.txt # add your target domain(s)
+vim ./state/config.json # configure your email address in order to receive alerts
+sudo ./subdomainFind.sh # or you can set up a cron job to run daily
+```
+# Crontab
+```
+0 21 * * * cd $GOPATH/src/github.com/sea-erkin/that-shouldnt-be-there && ./subdomainFind.sh
+```
 # Configuration
 Currently the alerting module is email based. In order to receive alerts, you must configure an authenticated SMTP account in the ./state/config.json file.
+Additionally whether or not you want to use AltDNS alongside Sublist3r is defined in the config.cfg file.
 
 # Use Cases
 The main benefit of TSBT is that changes are tracked over time. If you are an organization and are not confident about your external presence, you can configure TSBT to run on your identified external assets and alert you if any changes have happened. Let's say a lousy developer like myself spun up a webserver on a host they did not know was externally facing. TSBT would create an alert and send you a screenshot of the webpage so you can determine for yourself whether the identified web enbled system is legitimate.
 
 If you are a pentester and would like to automate a portion of your recon phase, this is certainly a great tool to run. If you are a pentester on a longer term external engagement, you could configure TSBT to run and alert you if any additional hosts were identified or ports were opened since you first performed your recon.
+
+# Credits
+Thank you to the creators of [AltDNS](https://github.com/infosec-au/altdns), [Sublist3r](https://github.com/aboul3la/Sublist3r), and [EyeWitness](https://github.com/ChrisTruncer/EyeWitness)
