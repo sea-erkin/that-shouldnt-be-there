@@ -179,45 +179,7 @@ echo "[*] Initializing sqlite3 database to store results"
 mv tsbt.db ./state
 echo "[*] Initialized sqlite3 database"
 
-# if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-#     wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
-#     tar -xvf phantomjs-2.1.1-linux-x86_64.tar.bz2
-#     cd phantomjs-2.1.1-linux-x86_64/bin/
-#     mv phantomjs ../../
-#     cd ../..
-#     rm -rf phantomjs-2.1.1-linux-x86_64
-#     rm phantomjs-2.1.1-linux-x86_64.tar.bz2
-# else
-#     wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-i686.tar.bz2
-#     tar -xvf phantomjs-2.1.1-linux-i686.tar.bz2
-#     cd phantomjs-2.1.1-linux-i686/bin/
-#     mv phantomjs ../../
-#     cd ../..
-#     rm -rf phantomjs-2.1.1-linux-i686
-#     rm phantomjs-2.1.1-linux-i686.tar.bz2
-# fi
-  
-# OS Specific Installation Statement
-# case ${osinfo} in
-#   # Kali 2 dependency Install
-#   Kali2)   
-#   ;;
-#   # Kali Dependency Installation
-#   Kali)
-#   ;;
-#   # Debian 7+ Dependency Installation
-#   Debian)
-#   ;;
-#   # Ubuntu Dependency Installation
-#   Ubuntu)
-#   ;;
-#   # Notify Manual Installation Requirement And Exit
-#   *)
-#     echo "[Error]: ${osinfo} is not supported by this setup script."
-#     echo
-#     exit 1
-# esac
+cd $TARGET_PROJECT_DIR && go get && go build
 
-# Finish Message
 echo '[*] Setup script completed successfully.'
 echo
