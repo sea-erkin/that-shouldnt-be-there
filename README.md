@@ -19,8 +19,9 @@ The tool can be broken down into the following steps:
 # Installation
 ```
 git clone https://github.com/sea-erkin/that-shouldnt-be-there.git
+cd that-shouldnt-be-there && ./setup.sh
 cd $GOPATH/src/github.com/sea-erkin/that-shouldnt-be-there/
-go get
+go get # might take slightly longer
 go build
 vim domains.txt # add your target domain(s)
 vim ./state/config.json # configure your email address in order to receive alerts
