@@ -41,15 +41,17 @@ echo $osinfo
 
 case ${machine} in
   Mac)
+   
+    # install wget, nmap
+    echo
+    echo "[*] Installing wget, nmap using brew"
+    brew install wget
+    brew install nmap
 
     # install golang
     echo
     echo "[*] Installing golang to build source"
-    wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://storage.googleapis.com/golang/go1.9.1.darwin-amd64.tar.gz
-    tar -C /usr/local -xzf go1.9.1.darwin-amd64.tar.gz
-    export PATH=$PATH:/usr/local/go/bin
-    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bash_profile
-    rm go1.9.1.darwin-amd64.tar.gz
+    brew install go
 
     cd .. && cp -r that-shouldnt-be-there/ $TARGET_PROJECT_DIR
 
@@ -62,11 +64,7 @@ case ${machine} in
     # install phantomjs
     echo
     echo "[*] Installing phantomjs binaries"
-    wget --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36" https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-macosx.zip
-    unzip phantomjs-2.1.1-macosx.zip
-    mv phantomjs-2.1.1-macosx/bin/phantomjs ./other-tools/phantomjs/
-    rm -rf phantomjs-2.1.1-macosx
-    rm phantomjs-2.1.1-macosx.zip
+    brew install phantomjs    
     echo "[*] Installed phantomjs"
 
     # install sqlite3
