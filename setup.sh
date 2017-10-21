@@ -21,7 +21,6 @@ TARGET_GO_DIR=$HOME/go/src/github.com/sea-erkin
 TARGET_PROJECT_DIR=$TARGET_GO_DIR/that-shouldnt-be-there
 
 # Make go directories
-mkdir -p $HOME/goroot
 mkdir -p $TARGET_GO_DIR
 
 clear
@@ -55,7 +54,6 @@ case ${machine} in
 
     cd .. && cp -r that-shouldnt-be-there/ $TARGET_PROJECT_DIR
 
-    export GOROOT=$HOME/goroot
     export GOPATH=$HOME/go  
     export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
@@ -89,23 +87,24 @@ case ${machine} in
     Kali2)   
     ;;
     # Kali Dependency Installation
-    Kali)
-    ;;
+    #Kali)
+    #;;
     # Debian 7+ Dependency Installation
     Debian)
     ;;
     # Ubuntu Dependency Installation
-    Ubuntu)
+    Ubuntu|Kali)
    
+      echo "Ubuntu or Kali"
+
       sudo apt-get update
       sudo apt-get install build-essential chrpath libssl-dev libxft-dev
  
       apt install golang-go	
       cd .. && cp -r that-shouldnt-be-there/ $TARGET_PROJECT_DIR
 
-      export GOROOT=$HOME/goroot
       export GOPATH=$HOME/go  
-      export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+      export PATH=$PATH:$GOPATH/bin
 
       cd $TARGET_PROJECT_DIR && go get && go build
       
