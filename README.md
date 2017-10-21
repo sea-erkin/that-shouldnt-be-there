@@ -15,6 +15,7 @@ The tool can be broken down into the following steps:
 5. Screenshot identified open ports for provided IP addresses and subdomains. Output: Images
 6. Tracking to identify changes over time. Output: Data stored in sqlite database
 7. Alerting on identified new hosts or open ports. Output: Email
+8. Output of all tools will be stored in the /state/ folder
 
 # Installation
 ```
