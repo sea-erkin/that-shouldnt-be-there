@@ -1,7 +1,4 @@
-# bin/bash
-
-# Import config
-. ./config.cfg
+#!/bin/bash
 
 startDirectory=$(pwd)
 
