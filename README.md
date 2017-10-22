@@ -30,6 +30,9 @@ sudo ./subdomainFind.sh # or you can set up a cron job to run daily
 ```
 # Crontab
 ```
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
 0 21 * * * cd $GOPATH/src/github.com/sea-erkin/that-shouldnt-be-there && ./subdomainFind.sh
 ```
 # Configuration
