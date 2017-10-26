@@ -19,19 +19,35 @@ for i in $(ls $currentDir/$targetDir); do
     echo "Filtering out hosts that have been already screenshotted"
 
 	# get the current file name and keep domain and source
-	currentFileDomainSource=$(echo $i | cut -d "_" -f 1 -f 2)
+	currentFileDomainSource=$(echo $i | cut -d "_" -f 1,2)
 
-	# get the latest file that has the same domain and source in the archive directory for this domain & source
-	latestFileInArchive=$(ls -t $currentFileDomainSource* | head -1)
+	echo "Current domain source: ""$currentFileDomainSource"
 
-	# difference the two files
-	$difference=$(diff $currentDir/$targetDir/$i $archiveDir/$latestFileInArchive)
+	# check to see if there are previous files
+	pastFilesExist=$(ls -l $currentDir/$archiveDir/ | grep $currentFileDomainSource | wc -l)
 
-	# if files not different, remove the file from the todo directory
-	if [[ $difference = "" ]]; then
+	if [[ $pastFilesExist != 0 ]]; then
+	  echo "Past files exist: ""$pastFilesExist"
 
-		echo "Removing file in screenshot todo because not different from last run: "$currentDir/$targetDir/$i
-		rm $currentDir/$targetDir/$i
+
+   	        # get the latest file that has the same domain and source in the archive directory for this domain & source
+        	latestFileInArchive=$(ls -t $currentDir/$archiveDir/$currentFileDomainSource* | head -1)
+    
+    		echo "Latest file in archive: ""$latestFileInArchive"
+    
+    		# difference the two files
+    		difference=$(diff $currentDir/$targetDir/$i $latestFileInArchive)
+    
+    		echo "Difference" "$difference"
+    
+    		# if files not different, remove the file from the todo directory
+    		if [[ $difference = "" ]]; then
+    
+    			echo "Removing file in screenshot todo because not different from last run: "$currentDir/$targetDir/$i
+    			rm $currentDir/$targetDir/$i
+			continue    
+
+    		fi
 
 	fi
 
@@ -47,15 +63,31 @@ for i in $(ls $currentDir/$targetDir); do
 
 done
 
-mv $currentDir/$toolDir/success* $currentDir/$doneDir
+totalCount=$(ls $currentDir/$toolDir | grep success | wc -l)
 
-now=$(date +"%m-%d-%Y")
-fileName="screenshot_"$now".tar.gz"
+echo "Total screenshot count: ""$totalCount"
 
-cd $currentDir/$doneDir && tar -czvf $fileName success*
+if [[ $totalCount > 0 ]]; then
 
-rm $currentDir/$doneDir/success*
+  echo "Sending "$totalCount" Screenshots"
 
-mv $currentDir/$targetDir/* $currentDir/$archiveDir/
+  mv $currentDir/$toolDir/success* $currentDir/$doneDir
 
-cd $currentDir && ./that-shouldnt-be-there -sendScreenshot -c=./state/config.json -d
+  now=$(date +"%m-%d-%Y")
+  fileName="screenshot_"$now".tar.gz"
+         
+  cd $currentDir/$doneDir && tar -czvf $fileName success*
+         
+  rm $currentDir/$doneDir/success*
+         
+  mv $currentDir/$targetDir/* $currentDir/$archiveDir/
+         
+  cd $currentDir && ./that-shouldnt-be-there -sendScreenshot -c=./state/config.json -d
+
+else
+
+  echo "No new screenshots to send"
+
+  exit 0
+
+fi
