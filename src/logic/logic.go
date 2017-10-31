@@ -253,13 +253,10 @@ func ApproveLatestIpPorts(v []repo.IPPortDb, alertPortFlag, screenshotTodoDirect
 // CreateAlertsForMissingAddedPorts
 // Set alert flag for added and missing ports
 // Creates alert approval uuids so can be marked as approved for the future
-func CreateAlertsForMissingAddedPorts(addedPorts, missingPorts []repo.IPPortDb) {
+func CreateAlertsForPorts(ports []repo.IPPortDb) {
 
 	var ipPortIdsToCreateAlertsFor = make([]string, 0)
-	for _, item := range addedPorts {
-		ipPortIdsToCreateAlertsFor = append(ipPortIdsToCreateAlertsFor, strconv.FormatInt(item.IPPortId, 10))
-	}
-	for _, item := range missingPorts {
+	for _, item := range ports {
 		ipPortIdsToCreateAlertsFor = append(ipPortIdsToCreateAlertsFor, strconv.FormatInt(item.IPPortId, 10))
 	}
 	repo.DbCreateIpPortAlert(ipPortIdsToCreateAlertsFor)

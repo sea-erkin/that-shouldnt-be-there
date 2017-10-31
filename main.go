@@ -122,14 +122,14 @@ func main() {
 				}
 
 				print("New ports found: ", addedPorts)
-				print("Ports missing:", missingPorts)
-				logic.CreateAlertsForMissingAddedPorts(addedPorts, missingPorts)
+				// print("Ports missing:", missingPorts)
+				logic.CreateAlertsForPorts(addedPorts)
 
 				// Prep identified ports to take screenshot of new host ports
 				alert.PrepNmapScreenshot(addedPorts, *alertPortFlag, config.ScreenshotTodoDirectory)
 
 				// Prep and send E-mail code. Will eventually support multiple alert formats such as text & app push notifs
-				body := alert.CreateEmailBodyFromAlertablePorts(addedPorts, missingPorts)
+				body := alert.CreateEmailBodyFromAlertablePorts(addedPorts)
 				alert.SendMail(body, config.FromEmail, config.EmailPassword, config.EmailHost, config.EmailPort, config.Recipients)
 
 			} else {
@@ -140,10 +140,10 @@ func main() {
 	}
 
 	if *alertSubdomainFlag != false {
-		newHosts, missingHosts := logic.AlertSubdomains()
+		newHosts, _ := logic.AlertSubdomains()
 
-		if len(newHosts) > 0 || len(missingHosts) > 0 {
-			body := alert.CreateEmailBodyFromAlertableHosts(newHosts, missingHosts)
+		if len(newHosts) > 0 {
+			body := alert.CreateEmailBodyFromAlertableHosts(newHosts)
 			alert.SendMail(body, config.FromEmail, config.EmailPassword, config.EmailHost, config.EmailPort, config.Recipients)
 		}
 	}

@@ -79,25 +79,19 @@ func PrepNmapScreenshot(ipPorts []repo.IPPortDb, fileName, screenshotTodoDirecto
 	common.CheckErr(err)
 }
 
-func CreateEmailBodyFromAlertableHosts(newHosts []repo.HostDb, missingHosts []repo.HostDb) string {
+func CreateEmailBodyFromAlertableHosts(newHosts []repo.HostDb) string {
 	body := "New host changes identified \n ================== \n"
 	for _, item := range newHosts {
 		body += item.Host + "\t New \n"
-	}
-	for _, item := range missingHosts {
-		body += item.Host + "\t Missing \n"
 	}
 	print("Email Body", body)
 	return body
 }
 
-func CreateEmailBodyFromAlertablePorts(addedPorts []repo.IPPortDb, missingPorts []repo.IPPortDb) string {
+func CreateEmailBodyFromAlertablePorts(addedPorts []repo.IPPortDb) string {
 	body := "New port changes identified \n ================== \n"
 	for _, port := range addedPorts {
 		body += "New State \t" + port.IP + ":" + port.Port + "\t [" + port.Protocol + "]" + "\t" + port.State + "\n"
-	}
-	for _, port := range missingPorts {
-		body += "Previous State \t" + port.IP + ":" + port.Port + "\t [" + port.Protocol + "]" + "\t" + port.State + "\n"
 	}
 	print("Email Body", body)
 	return body

@@ -8,6 +8,14 @@ if (args.length < 2) {
     phantom.exit();
 }
 
+var urlSplit = args[1].split(':');
+var port = urlSplit[urlSplit.length-1];
+var protocol = urlSplit[0];
+if (port == '443' && protocol == 'http') {
+  console.log("Protocol mismatch");
+  phantom.exit();
+}
+
 var outstring = args[1].split("://").join(".");
 var webpage = require('webpage').create();
 webpage.settings.resourceTimeout = 3000;
